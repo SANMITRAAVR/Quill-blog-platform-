@@ -23,12 +23,18 @@ function BlogProvider({ children }) {
               "Artificial intelligence is transforming content creation through automation and smart recommendations.",
             author: "Sanmitraa",
             readTime: "5 min read",
+            likes: 0,
+            bookmarked: false,
+            comments: [],
           },
         ];
   });
 
   useEffect(() => {
-    localStorage.setItem("quillBlogs", JSON.stringify(blogs));
+    localStorage.setItem(
+      "quillBlogs",
+      JSON.stringify(blogs)
+    );
   }, [blogs]);
 
   return (

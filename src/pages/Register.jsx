@@ -1,8 +1,42 @@
-function Register() {
-  return (
-    <div className="min-h-screen bg-black flex items-center justify-center text-white">
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-      <div className="bg-gray-900 p-10 rounded-2xl w-[400px] border border-gray-800">
+import { AuthContext } from "../context/AuthContext";
+
+function Register() {
+
+  const navigate = useNavigate();
+
+  const { register } = useContext(AuthContext);
+
+  const [username, setUsername] = useState("");
+
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
+
+  const handleRegister = () => {
+
+    const response = register({
+      username,
+      email,
+      password,
+    });
+
+    if (!response.success) {
+      setError(response.message);
+      return;
+    }
+
+    navigate("/");
+  };
+
+  return (
+    <div className="min-h-screen bg-black flex items-center justify-center text-white px-5">
+
+      <div className="bg-white/5 backdrop-blur-lg border border-white/10 p-10 rounded-3xl w-full max-w-md">
 
         <h1 className="text-4xl font-bold mb-8 text-center">
           Register
@@ -13,22 +47,37 @@ function Register() {
           <input
             type="text"
             placeholder="Enter username"
-            className="bg-black border border-gray-700 rounded-xl px-4 py-3 outline-none"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="bg-black/40 border border-gray-700 rounded-xl px-4 py-3 outline-none"
           />
 
           <input
             type="email"
             placeholder="Enter email"
-            className="bg-black border border-gray-700 rounded-xl px-4 py-3 outline-none"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-black/40 border border-gray-700 rounded-xl px-4 py-3 outline-none"
           />
 
           <input
             type="password"
             placeholder="Enter password"
-            className="bg-black border border-gray-700 rounded-xl px-4 py-3 outline-none"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="bg-black/40 border border-gray-700 rounded-xl px-4 py-3 outline-none"
           />
 
-          <button className="bg-blue-500 hover:bg-blue-600 py-3 rounded-xl font-semibold">
+          {error && (
+            <div className="bg-red-500/20 border border-red-500 text-red-400 p-3 rounded-xl">
+              {error}
+            </div>
+          )}
+
+          <button
+            onClick={handleRegister}
+            className="bg-blue-500 hover:bg-blue-600 py-3 rounded-xl font-semibold"
+          >
             Create Account
           </button>
 

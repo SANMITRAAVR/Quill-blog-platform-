@@ -1,5 +1,9 @@
 import { useContext, useState } from "react";
-import { useParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 
@@ -8,6 +12,8 @@ import { BlogContext } from "../context/BlogContext";
 function BlogDetails() {
 
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   const { blogs, setBlogs } = useContext(BlogContext);
 
@@ -41,7 +47,6 @@ function BlogDetails() {
 
     if (!comment.trim()) return;
 
-    // Toxic Detection
     const lowerComment = comment.toLowerCase();
 
     const isToxic = toxicWords.some((word) =>
@@ -103,6 +108,37 @@ function BlogDetails() {
     setBlogs(updatedBlogs);
   };
 
+  // Bookmark Blog
+  const handleBookmark = () => {
+
+    const updatedBlogs = blogs.map((item) => {
+
+      if (item.id == id) {
+
+        return {
+          ...item,
+          bookmarked: !item.bookmarked,
+        };
+      }
+
+      return item;
+    });
+
+    setBlogs(updatedBlogs);
+  };
+
+  // Delete Blog
+  const handleDelete = () => {
+
+    const updatedBlogs = blogs.filter(
+      (item) => item.id != id
+    );
+
+    setBlogs(updatedBlogs);
+
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
 
@@ -110,7 +146,7 @@ function BlogDetails() {
 
       <div className="max-w-5xl mx-auto px-6 py-12">
 
-        {/* Image */}
+        {/* Blog Image */}
         <img
           src={blog.image}
           alt={blog.title}
@@ -127,9 +163,10 @@ function BlogDetails() {
           {blog.title}
         </h1>
 
-        {/* Author */}
-        <div className="flex items-center justify-between mb-10">
+        {/* Author + Buttons */}
+        <div className="flex items-center justify-between mb-10 flex-wrap gap-5">
 
+          {/* Author */}
           <div className="flex items-center gap-4">
 
             <img
@@ -152,13 +189,48 @@ function BlogDetails() {
 
           </div>
 
-          {/* Like Button */}
-          <button
-            onClick={handleLike}
-            className="bg-pink-500 hover:bg-pink-600 px-5 py-3 rounded-xl font-semibold transition"
-          >
-            ❤️ {blog.likes || 0}
-          </button>
+          {/* Buttons */}
+          <div className="flex gap-4 flex-wrap">
+
+            {/* Like */}
+            <button
+              onClick={handleLike}
+              className="bg-pink-500 hover:bg-pink-600 px-5 py-3 rounded-xl font-semibold transition"
+            >
+              ❤️ {blog.likes || 0}
+            </button>
+
+            {/* Bookmark */}
+            <button
+              onClick={handleBookmark}
+              className={`px-5 py-3 rounded-xl font-semibold transition ${
+                blog.bookmarked
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+            >
+              {blog.bookmarked
+                ? "Bookmarked"
+                : "Bookmark"}
+            </button>
+
+            {/* Edit */}
+            <Link
+              to={`/edit/${blog.id}`}
+              className="bg-yellow-500 hover:bg-yellow-600 px-5 py-3 rounded-xl font-semibold transition"
+            >
+              Edit
+            </Link>
+
+            {/* Delete */}
+            <button
+              onClick={handleDelete}
+              className="bg-red-500 hover:bg-red-600 px-5 py-3 rounded-xl font-semibold transition"
+            >
+              Delete
+            </button>
+
+          </div>
 
         </div>
 

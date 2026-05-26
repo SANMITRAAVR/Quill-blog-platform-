@@ -1,25 +1,45 @@
 function Hero() {
   return (
-    <section className="flex flex-col items-center justify-center text-center py-28 px-6">
+    <section className="relative flex flex-col items-center justify-center text-center py-32 px-6 overflow-hidden">
 
-      <h1 className="text-6xl font-extrabold leading-tight max-w-4xl">
-        AI Powered <span className="text-blue-500">Blogging</span> Platform
-      </h1>
+      {/* Glow Effects */}
+      <div className="absolute w-96 h-96 bg-blue-500/20 blur-3xl rounded-full top-10 left-10"></div>
 
-      <p className="text-gray-400 text-lg mt-6 max-w-2xl">
-        Write smarter, discover better content, and interact with
-        AI-powered blogging tools using Quill.
-      </p>
+      <div className="absolute w-96 h-96 bg-pink-500/20 blur-3xl rounded-full bottom-10 right-10"></div>
 
-      <div className="flex gap-4 mt-10">
+      {/* Content */}
+      <div className="relative z-10">
 
-        <button className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-xl font-semibold transition">
-          Start Writing
-        </button>
+        <h1 className="text-6xl md:text-7xl font-extrabold leading-tight max-w-5xl text-white">
 
-        <button className="border border-gray-700 hover:border-white px-6 py-3 rounded-xl transition">
-          Explore Blogs
-        </button>
+          The Future of
+          <span className="text-blue-500"> AI Blogging</span>
+
+        </h1>
+
+        <p className="text-gray-400 text-xl mt-8 max-w-3xl mx-auto leading-9">
+
+          Create smarter blogs, interact with AI-powered tools,
+          and experience the next generation of content creation
+          using Quill.
+
+        </p>
+
+        <div className="flex flex-wrap justify-center gap-5 mt-12">
+
+          <button className="bg-blue-500 hover:bg-blue-600 px-8 py-4 rounded-2xl font-semibold text-lg transition shadow-lg shadow-blue-500/30">
+
+            Start Writing
+
+          </button>
+
+          <button className="border border-white/20 hover:border-white/40 px-8 py-4 rounded-2xl text-lg transition text-white">
+
+            Explore Blogs
+
+          </button>
+
+        </div>
 
       </div>
 

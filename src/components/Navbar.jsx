@@ -1,9 +1,18 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+
+import { FaBars, FaTimes } from "react-icons/fa";
+
+import { AuthContext } from "../context/AuthContext";
 
 function Navbar() {
 
   const [darkMode, setDarkMode] = useState(true);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const { currentUser, logout } =
+    useContext(AuthContext);
 
   useEffect(() => {
 
@@ -16,56 +25,162 @@ function Navbar() {
   }, [darkMode]);
 
   return (
-    <nav className="flex items-center justify-between px-10 py-6 border-b border-gray-800 dark:bg-black bg-white transition">
+    <nav className="border-b border-gray-800 dark:bg-black bg-white transition">
 
-      {/* Logo */}
-      <Link
-        to="/"
-        className="text-3xl font-bold text-blue-500"
-      >
-        Quill
-      </Link>
+      <div className="flex items-center justify-between px-6 md:px-10 py-6">
 
-      {/* Nav Links */}
-      <div className="flex items-center gap-6">
-
+        {/* Logo */}
         <Link
           to="/"
-          className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition"
+          className="text-3xl font-bold text-blue-500"
         >
-          Home
+          Quill
         </Link>
 
-        <Link
-          to="/login"
-          className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition"
-        >
-          Login
-        </Link>
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-6">
 
-        <Link
-          to="/register"
-          className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition"
-        >
-          Register
-        </Link>
+          <Link
+            to="/"
+            className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition"
+          >
+            Home
+          </Link>
 
-        <Link
-          to="/create"
-          className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-xl text-white transition"
-        >
-          Write
-        </Link>
+          <Link
+            to="/create"
+            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-xl text-white transition"
+          >
+            Write
+          </Link>
 
-        {/* Dark Mode Toggle */}
+          {/* Logged In User */}
+          {currentUser ? (
+
+            <>
+              <div className="bg-white/10 px-4 py-2 rounded-xl text-white">
+
+                👤 {currentUser.username}
+
+              </div>
+
+              <button
+                onClick={logout}
+                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl text-white transition"
+              >
+                Logout
+              </button>
+            </>
+
+          ) : (
+
+            <>
+              <Link
+                to="/login"
+                className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition"
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/register"
+                className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition"
+              >
+                Register
+              </Link>
+            </>
+
+          )}
+
+          {/* Dark Mode */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="bg-gray-800 text-white px-4 py-2 rounded-xl"
+          >
+            {darkMode ? "☀️" : "🌙"}
+          </button>
+
+        </div>
+
+        {/* Mobile Menu Button */}
         <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="bg-gray-800 text-white px-4 py-2 rounded-xl"
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-2xl text-white"
         >
-          {darkMode ? "☀️" : "🌙"}
+          {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
 
       </div>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+
+        <div className="md:hidden flex flex-col gap-5 px-6 pb-6 bg-black text-white">
+
+          <Link
+            to="/"
+            onClick={() => setMenuOpen(false)}
+          >
+            Home
+          </Link>
+
+          <Link
+            to="/create"
+            onClick={() => setMenuOpen(false)}
+            className="bg-blue-500 px-4 py-3 rounded-xl text-center"
+          >
+            Write
+          </Link>
+
+          {/* User Section */}
+          {currentUser ? (
+
+            <>
+              <div className="bg-white/10 px-4 py-3 rounded-xl">
+
+                👤 {currentUser.username}
+
+              </div>
+
+              <button
+                onClick={logout}
+                className="bg-red-500 px-4 py-3 rounded-xl"
+              >
+                Logout
+              </button>
+            </>
+
+          ) : (
+
+            <>
+              <Link
+                to="/login"
+                onClick={() => setMenuOpen(false)}
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/register"
+                onClick={() => setMenuOpen(false)}
+              >
+                Register
+              </Link>
+            </>
+
+          )}
+
+          {/* Dark Mode */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="bg-gray-800 text-white px-4 py-3 rounded-xl"
+          >
+            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+          </button>
+
+        </div>
+
+      )}
 
     </nav>
   );

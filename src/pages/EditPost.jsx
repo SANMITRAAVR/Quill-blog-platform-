@@ -1,81 +1,51 @@
-import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { BlogContext } from "../context/BlogContext";
 
-function CreatePost() {
+function EditPost() {
+
+  const { id } = useParams();
 
   const navigate = useNavigate();
 
   const { blogs, setBlogs } = useContext(BlogContext);
 
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [image, setImage] = useState("");
-  const [content, setContent] = useState("");
+  const existingBlog = blogs.find(
+    (item) => item.id == id
+  );
 
-  const [summary, setSummary] = useState("");
+  const [title, setTitle] = useState(existingBlog.title);
 
-  const [loadingAI, setLoadingAI] = useState(false);
+  const [category, setCategory] = useState(existingBlog.category);
 
-  // Fake AI Typing Effect
-  useEffect(() => {
+  const [image, setImage] = useState(existingBlog.image);
 
-    if (!content) {
-      setSummary("");
-      return;
-    }
+  const [content, setContent] = useState(existingBlog.content);
 
-    setLoadingAI(true);
+  // Update Blog
+  const handleUpdate = () => {
 
-    const generatedSummary =
-      content.slice(0, 120) + "...";
+    const updatedBlogs = blogs.map((item) => {
 
-    let index = 0;
+      if (item.id == id) {
 
-    setSummary("");
-
-    const interval = setInterval(() => {
-
-      setSummary((prev) =>
-        prev + generatedSummary[index]
-      );
-
-      index++;
-
-      if (index >= generatedSummary.length) {
-
-        clearInterval(interval);
-
-        setLoadingAI(false);
+        return {
+          ...item,
+          title,
+          category,
+          image,
+          content,
+          description: content.slice(0, 100),
+        };
       }
 
-    }, 20);
+      return item;
+    });
 
-    return () => clearInterval(interval);
+    setBlogs(updatedBlogs);
 
-  }, [content]);
-
-  // Publish Blog
-  const handleSubmit = () => {
-
-    const newBlog = {
-      id: Date.now(),
-      title,
-      category,
-      image,
-      content,
-      description: content.slice(0, 100),
-      author: "Sanmitraa",
-      readTime: "5 min read",
-      likes: 0,
-      bookmarked: false,
-      comments: [],
-    };
-
-    setBlogs([newBlog, ...blogs]);
-
-    navigate("/");
+    navigate(`/blog/${id}`);
   };
 
   return (
@@ -84,7 +54,7 @@ function CreatePost() {
       <div className="max-w-4xl mx-auto">
 
         <h1 className="text-5xl font-bold mb-10">
-          Create Blog
+          Edit Blog
         </h1>
 
         <div className="flex flex-col gap-6">
@@ -132,28 +102,18 @@ function CreatePost() {
               ✨ AI Summary
             </h2>
 
-            {loadingAI ? (
-
-              <p className="text-blue-300 animate-pulse">
-                AI is generating summary...
-              </p>
-
-            ) : (
-
-              <p className="text-gray-300 leading-8">
-                {summary || "AI-generated summary will appear here..."}
-              </p>
-
-            )}
+            <p className="text-gray-300">
+              {content.slice(0, 120)}...
+            </p>
 
           </div>
 
-          {/* Publish */}
+          {/* Update Button */}
           <button
-            onClick={handleSubmit}
-            className="bg-blue-500 hover:bg-blue-600 py-4 rounded-2xl text-lg font-semibold transition"
+            onClick={handleUpdate}
+            className="bg-green-500 hover:bg-green-600 py-4 rounded-2xl text-lg font-semibold transition"
           >
-            Publish Blog
+            Update Blog
           </button>
 
         </div>
@@ -164,4 +124,4 @@ function CreatePost() {
   );
 }
 
-export default CreatePost;
+export default EditPost;
